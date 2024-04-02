@@ -94,5 +94,76 @@ namespace MinecraftServer
 
             return new int[] { value, byteIndex };
         }
+
+        public static long DecodeVarLong(byte[] bytes)
+        {
+            long value = 0;
+            int position = 0;
+            int byteIndex = 0;
+            byte currentByte;
+
+            while (true)
+            {
+                currentByte = bytes[byteIndex];
+                value |= (long)(currentByte & 127) << position;
+
+                position += 7;
+                byteIndex++;
+
+                if ((currentByte & 128) == 0) break;
+
+                if (byteIndex > 8)
+                {
+                    throw new Exception("VarLong has too many bytes");
+                }
+            }
+
+            return value;
+        }
+
+        public static byte[] EncodeVarLong(long value)
+        {
+            List<byte> bytes = new List<byte>();
+
+            while (true)
+            {
+                if ((value & ~127) == 0)
+                {
+                    bytes.Add((byte)value);
+                    break;
+                }
+                bytes.Add((byte)((value & 127) | 128));
+
+                value >>>= 7;
+            }
+
+            return bytes.ToArray();
+        }
+
+        public static long[] DecodeVarLongIncludeLength(byte[] bytes)
+        {
+            long value = 0;
+            int position = 0;
+            int byteIndex = 0;
+            byte currentByte;
+
+            while (true)
+            {
+                currentByte = bytes[byteIndex];
+                value |= (long)(currentByte & 127) << position;
+
+                position += 7;
+                byteIndex++;
+
+                if ((currentByte & 128) == 0) break;
+
+                if (byteIndex > 8)
+                {
+                    throw new Exception("VarLong has too many bytes");
+                }
+            }
+
+            return new long[] { value, byteIndex };
+        }
     }
 }

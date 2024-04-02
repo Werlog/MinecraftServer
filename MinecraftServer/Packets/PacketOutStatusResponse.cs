@@ -19,7 +19,6 @@ namespace MinecraftServer.Packets
     ""players"": {
         ""max"": 100,
         ""online"": 1,
-        ""sample"": []
     },
     ""description"": {
         ""text"": ""Hello world""
